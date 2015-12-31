@@ -5,19 +5,22 @@
 
 (defn on-js-reload [] nil)
 
-(defn snake [coords]
+(def colors
+  ["red" "blue" "green"])
+
+(defn snake [index coords]
   (for [[x y] coords]
     [:rect {:key (str x "," y)
             :width 10
             :height 10
             :x x
             :y y
-            :style {:fill "#369"}}]))
+            :style {:fill (colors index)}}]))
 
 (defn simple-component [state]
   [:svg {:width 500 :height 500}
-   (for [coords (:snakes @state)]
-     (snake coords))])
+   (for [[index coords] (map list (range) (:snakes @state))]
+     (snake index coords))])
 
 (defn render-simple [state]
   (r/render-component [simple-component state]
