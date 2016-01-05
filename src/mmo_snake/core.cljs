@@ -42,22 +42,27 @@
             :style {:fill (colors index)
                     :fill-opacity 0.5}}]))
 
-(defn simple-component [{:keys [snakes time]}]
+(defn game [{:keys [snakes time]}]
   [:svg {:width 100 :height 100 :style {:border "1px solid black"}}
    (for [[index {:keys [length moves]}] (map list (range) snakes)]
      (snake index (moves->coords time length moves)))])
 
+(defn simple-component [state]
+  (game @state))
+
 (defn render-simple [state]
-  (r/render-component [simple-component @state]
-                      (.-body js/document)))
+  (r/render-component [simple-component state]
+                      (.-body js/document))
+  (js/setInterval (fn []
+                   (pprint @state)
+                   (swap! state update-in [:time] inc))
+                  1000))
 
-(def state
-  (atom {:snakes [{:length 3
-                   :moves [[[9 9] :west]]}
-                  {:length 6
-                   :moves [[[0 0] :east]
-                           [[1 0] :south]
-                           [[1 2] :east]]}]
-         :time 7}))
-
-(render-simple state)
+(render-simple
+ (r/atom {:snakes [{:length 3
+                    :moves [[[9 9] :west]]}
+                   {:length 6
+                    :moves [[[0 0] :east]
+                            [[1 0] :south]
+                            [[1 2] :east]]}]
+          :time 1}) )
