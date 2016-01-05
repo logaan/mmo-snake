@@ -15,8 +15,12 @@
                     :fill-opacity 0.5}}]))
 
 (defn game [{:keys [snakes time]} {:keys [change-direction]}]
-  [:svg {:id :game :width 500 :height 500 :tabIndex 0
+  [:div
+   [:svg {:id :game :width 500 :height 500 :tabIndex 0
          :style {:border "1px solid black"}
          :onKeyDown change-direction}
    (for [[index {:keys [length moves]}] (map list (range) snakes)]
-     (snake index (moves->coords time length moves)))])
+     (snake index (moves->coords time length moves)))]
+   [:p "Controls"]
+   [:p "Player 1 - A S"]
+   [:p "Player 2 - K L"]])
