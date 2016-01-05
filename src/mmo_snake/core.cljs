@@ -6,28 +6,6 @@
 
 (defn on-js-reload [] nil)
 
-(def colors
-  ["red" "blue" "green"])
-
-(defn snake [index coords]
-  (for [[x y] coords]
-    [:rect {:key (str x "," y)
-            :width 10
-            :height 10
-            :x (* x 10)
-            :y (* y 10)
-            :style {:fill (colors index)
-                    :fill-opacity 0.5}}]))
-
-(defn simple-component [state]
-  [:svg {:width 500 :height 500}
-   (for [[index coords] (map list (range) (:snakes @state))]
-     (snake index coords))])
-
-(defn render-simple [state]
-  (r/render-component [simple-component state]
-                      (.-body js/document)))
-
 (def directions
   {:east  [1 0]
    :west  [-1 0]
@@ -51,16 +29,35 @@
         full-history (take game-length (concat history future))]
     (drop (- game-length snake-length) full-history)))
 
-(def red-coords
-  [[0 0] [1 0] [1 1] [1 2] [2 2] [3 2]])
+(def colors
+  ["red" "blue" "green"])
 
-(def blue-moves
-  [[[0 0] :east]
-   [[1 0] :south]
-   [[1 2] :east]])
+(defn snake [index coords]
+  (for [[x y] coords]
+    [:rect {:key (str x "," y)
+            :width 10
+            :height 10
+            :x (* x 10)
+            :y (* y 10)
+            :style {:fill (colors index)
+                    :fill-opacity 0.5}}]))
+
+(defn simple-component [{:keys [snakes time]}]
+  [:svg {:width 100 :height 100 :style {:border "1px solid black"}}
+   (for [[index {:keys [length moves]}] (map list (range) snakes)]
+     (snake index (moves->coords time length moves)))])
+
+(defn render-simple [state]
+  (r/render-component [simple-component @state]
+                      (.-body js/document)))
 
 (def state
-  (atom {:snakes [red-coords
-                  (moves->coords 8 6 blue-moves)]}))
+  (atom {:snakes [{:length 3
+                   :moves [[[9 9] :west]]}
+                  {:length 6
+                   :moves [[[0 0] :east]
+                           [[1 0] :south]
+                           [[1 2] :east]]}]
+         :time 7}))
 
 (render-simple state)
