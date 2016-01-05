@@ -22,3 +22,22 @@
         future (last ilines)
         full-history (take game-length (concat history future))]
     (drop (- game-length snake-length) full-history)))
+
+(def rotations
+  {:cw {:north :east
+        :east :south
+        :south :west
+        :west :north}
+   :ccw {:north :west
+         :west :south
+         :south :east
+         :east :north}})
+
+(defn add-move [state player-no rotation]
+  (let [snake (get-in state [:snakes player-no])
+        moves (:moves snake)
+        [_ direction] (last moves)
+        head (last (moves->coords (:time state) (:length snake) moves))
+        new-direction (get-in rotations [rotation direction])
+        new-move [head new-direction]]
+    (update-in state [:snakes player-no :moves] #(conj % new-move))))

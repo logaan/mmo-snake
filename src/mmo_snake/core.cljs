@@ -1,7 +1,7 @@
 (ns mmo-snake.core
   (:require [reagent.core :as r]
             [cljs.pprint :refer [pprint]]
-            [mmo-snake.model.game :refer [moves->coords]]
+            [mmo-snake.model.game :refer [add-move]]
             [mmo-snake.view.game :refer [game]]))
 
 (enable-console-print!)
@@ -14,26 +14,10 @@
    75 [1 :ccw]
    76 [1 :cw]})
 
-(def rotations
-  {:cw {:north :east
-        :east :south
-        :south :west
-        :west :north}
-   :ccw {:north :west
-         :west :south
-         :south :east
-         :east :north}})
-
 (defn change-direction [state]
   (fn [e]
     (if-let [[player-no rotation] (key-codes e.keyCode)]
-      (let [snake (get-in @state [:snakes player-no])
-            moves (:moves snake)
-            [_ direction] (last moves)
-            head (last (moves->coords (:time @state) (:length snake) moves))
-            new-direction (get-in rotations [rotation direction])
-            new-move [head new-direction]]
-        (swap! state update-in [:snakes player-no :moves] #(conj % new-move))))))
+      (swap! state add-move player-no rotation))))
 
 (defn simple-component [state]
   (game @state {:change-direction (change-direction state)}))
