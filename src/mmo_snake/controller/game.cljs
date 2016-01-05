@@ -1,6 +1,5 @@
 (ns mmo-snake.controller.game
-  (:require [mmo-snake.model.game :refer [add-move]])
-  )
+  (:require [mmo-snake.model.game :refer [add-move]]))
 
 (def key-codes
   {65 [0 :ccw]

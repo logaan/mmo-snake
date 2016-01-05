@@ -1,10 +1,13 @@
 # mmo-snake
 
-FIXME: Write a one-line description of your library/project.
+Massively multiplayer online snake. Peer to peer with CRDTs at core. MVS
+architecture with reagent and react for rendering.
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+* Largely an experiment
+* Developing a better understanding of CRDTs
+* Figuring out a good architecture for client side development
 
 ## Design
 
