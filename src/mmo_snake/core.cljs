@@ -17,7 +17,7 @@
 
 (defn infinite-lines [moves]
   (for [[coord d] moves]
-    (take 10 (iterate (partial move (directions d)) coord))))
+    (iterate (partial move (directions d)) coord)))
 
 (defn moves->coords [game-length snake-length moves]
   (let [ilines (infinite-lines moves)
@@ -42,25 +42,34 @@
             :style {:fill (colors index)
                     :fill-opacity 0.5}}]))
 
-(defn game [{:keys [snakes time]}]
-  [:svg {:width 100 :height 100 :style {:border "1px solid black"}}
+(defn game [{:keys [snakes time]} {:keys [change-direction]}]
+  [:svg {:id :game :width 500 :height 500 :tabIndex 0
+         :style {:border "1px solid black"}
+         :onKeyDown change-direction}
    (for [[index {:keys [length moves]}] (map list (range) snakes)]
      (snake index (moves->coords time length moves)))])
 
+(def keys
+  {65 :p1-left
+   83 :p1-right
+   75 :p2-left
+   76 :p2-right})
+
+(defn change-direction [state]
+  (fn [e]
+    (println (keys e.keyCode))))
+
 (defn simple-component [state]
-  (game @state))
+  (game @state {:change-direction (change-direction state)}))
 
 (defn render-simple [state]
-  (r/render-component [simple-component state]
-                      (.-body js/document))
-  (js/setInterval (fn []
-                   (pprint @state)
-                   (swap! state update-in [:time] inc))
-                  1000))
+  (r/render-component [simple-component state] (.-body js/document))
+  (js/setInterval (fn [] (swap! state update-in [:time] inc)) 100)
+  (.focus (.getElementById js/document "game")))
 
 (render-simple
  (r/atom {:snakes [{:length 3
-                    :moves [[[9 9] :west]]}
+                    :moves [[[49 49] :west]]}
                    {:length 6
                     :moves [[[0 0] :east]
                             [[1 0] :south]
