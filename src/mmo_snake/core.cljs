@@ -67,14 +67,14 @@
 
 (defn change-direction [state]
   (fn [e]
-    (let [[player-no rotation] (key-codes e.keyCode)
-          snake (get-in @state [:snakes player-no])
-          moves (:moves snake)
-          [_ direction] (last moves)
-          head (last (moves->coords (:time @state) (:length snake) moves))
-          new-direction (get-in rotations [rotation direction])
-          new-move [head new-direction]]
-      (swap! state update-in [:snakes player-no :moves] #(conj % new-move)))))
+    (if-let [[player-no rotation] (key-codes e.keyCode)]
+      (let [snake (get-in @state [:snakes player-no])
+            moves (:moves snake)
+            [_ direction] (last moves)
+            head (last (moves->coords (:time @state) (:length snake) moves))
+            new-direction (get-in rotations [rotation direction])
+            new-move [head new-direction]]
+        (swap! state update-in [:snakes player-no :moves] #(conj % new-move))))))
 
 (defn simple-component [state]
   (game @state {:change-direction (change-direction state)}))
