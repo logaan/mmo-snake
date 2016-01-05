@@ -49,15 +49,27 @@
    (for [[index {:keys [length moves]}] (map list (range) snakes)]
      (snake index (moves->coords time length moves)))])
 
-(def keys
-  {65 :p1-left
-   83 :p1-right
-   75 :p2-left
-   76 :p2-right})
+(def key-codes
+  {65 [0 :ccw]
+   83 [0 :cw]
+   75 [1 :ccw]
+   76 [1 :cw]})
+
+(def rotations
+  {:cw {:north :east
+        :east :south
+        :south :west
+        :west :north}
+   :ccw {:north :west
+         :west :south
+         :south :east
+         :east :north}})
 
 (defn change-direction [state]
   (fn [e]
-    (println (keys e.keyCode))))
+    (let [[player-no rotation] (key-codes e.keyCode)
+          [_ direction] (last (get-in @state [:snakes player-no :moves]))]
+      (println (get-in rotations [rotation direction])))))
 
 (defn simple-component [state]
   (game @state {:change-direction (change-direction state)}))
@@ -68,10 +80,10 @@
   (.focus (.getElementById js/document "game")))
 
 (render-simple
- (r/atom {:snakes [{:length 3
-                    :moves [[[49 49] :west]]}
-                   {:length 6
+ (r/atom {:snakes [{:length 6
                     :moves [[[0 0] :east]
                             [[1 0] :south]
-                            [[1 2] :east]]}]
+                            [[1 2] :east]]}
+                   {:length 3
+                    :moves [[[49 49] :west]]}]
           :time 1}) )
