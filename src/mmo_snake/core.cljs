@@ -23,4 +23,4 @@
                             [[1 2] :east]]}
                    {:length 3
                     :moves [[[49 49] :west]]}]
-          :time 1}) )
+          :time 1}))
