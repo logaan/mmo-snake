@@ -7,3 +7,4 @@ mv resources/public/* ./
 git add .
 git commit -m "publishing public"
 git push origin gh-pages
+git checkout master
