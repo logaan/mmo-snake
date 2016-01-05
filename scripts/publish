@@ -1,6 +1,3 @@
 #!/usr/bin/env bash
 
-cp -r resources/public/* ./
-git add .
-git stash
-git checkout gh-pages
+git subtree push --prefix resources/public/ origin gh-pages
