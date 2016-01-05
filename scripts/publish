@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cp -r resources/public/* ./
+git add .
+git stash
+git checkout gh-pages
+rm -rf *
+git stash apply
